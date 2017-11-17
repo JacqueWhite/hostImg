@@ -27,7 +27,6 @@ router.get('/:resource', function(req, res, next) {
 				message: err
 		})
 	})
-
 })
 
 router.get('/:resource/:id', function(req, res, next) {
@@ -56,10 +55,9 @@ router.get('/:resource/:id', function(req, res, next) {
 			message: 'Not a valid ID'
 		})
 	})
-
 })
 
-router.get('/:resource', function(req, res, next) {
+router.post('/:resource', function(req, res, next) {
 	var resource = req.params.resource
 
 	var controller = controllers[resource]
@@ -71,20 +69,19 @@ router.get('/:resource', function(req, res, next) {
 		return
 	}
 
-	controller.get(req.query, false)
-	.then(function(results){
+	controller.post(req.body, false)
+	.then(function(result){
 		res.json({
 				confirmation: 'success',
-				results: results
+				result: result
 		})
 	})
 	.catch(function(err){
 		res.json({
 				confirmation: 'fail',
-				message: 'Not a valid ID'
+				message: err
 		})
 	})
-
 })
 
 module.exports = router;
