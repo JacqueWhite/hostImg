@@ -11,7 +11,6 @@ module.exports = {
                     reject(err)
                     return
                 }
-
                 resolve(photos)
             })
         })
@@ -32,7 +31,7 @@ module.exports = {
 
     post: function(params, isRaw) {
         return new Promise(function(resolve, reject) {
-            Post.create(params, function(err, post) {
+            Photo.create(params, function(err, photo) {
                 if (err) {
                     reject(err)
                     return

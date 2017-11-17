@@ -1,4 +1,4 @@
-var Profile = require('../models/Photo')
+var Profile = require('../models/Profile')
 // running all commands through promises with bluebird, no callbacks
 var Promise = require('bluebird');
 
@@ -34,7 +34,7 @@ module.exports = {
 
     post: function(params, isRaw) {
         return new Promise(function(resolve, reject) {
-            Post.create(params, function(err, post) {
+            Profile.create(params, function(err, profile) {
                 if (err) {
                     reject(err)
                     return
