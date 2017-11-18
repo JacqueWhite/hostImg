@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Photos } from '../components/containers'
+import { Photos } from './components/containers'
+import store from './stores'
+import { Provider } from 'react-redux'
 
-class App extends Component {
+const app = (
+	<Provider store = { store.configureStore() }>
+		<div>
+			React Entry Point
+			<Photos />
+		</div>
+	</Provider>
+)
 
-	render(){
-		return (
-			<div>
-				React Entry Point
-				<Photos />
-			</div>
-		)
-	}
-
-}
-
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(app, document.getElementById('root'))
