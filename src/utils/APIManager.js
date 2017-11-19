@@ -20,4 +20,21 @@ export default {
 		})
 	}
 
+	post: (myPhoto) => {
+		return new Promise((resolve, reject) => {
+			superagent
+			.post('/api/photos', myPhoto)
+			.query(params)
+			.set('Accept', 'application/json')
+			.end((err, response) => {
+				if(err){
+					reject(err)
+					return
+				}
+
+				resolve(response.body)
+			})
+		})
+	}
+
 }

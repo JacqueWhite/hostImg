@@ -72,14 +72,14 @@ router.post('/:resource', function(req, res, next) {
 	controller.post(req.body, false)
 	.then(function(result){
 		res.json({
-				confirmation: 'success',
-				result: result
+			confirmation: 'success',
+			result: result
 		})
 	})
 	.catch(function(err){
 		res.json({
-				confirmation: 'fail',
-				message: err
+			confirmation: 'fail',
+			message: err
 		})
 	})
 })

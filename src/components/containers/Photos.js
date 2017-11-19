@@ -19,7 +19,7 @@ class Photos extends Component {
 
 		return (
 				<div>
-					<UploadPhoto />
+					<UploadPhoto onCreate={this.submitPhoto.bind(this)}/>
 					<div className="card">
 					<ol>
 					  { list }	
@@ -38,6 +38,7 @@ const stateToProps = (state) => {
 
 const dispatchToProps = (dispatch) => {
 	return {
+		createPhoto: (params) => dispatch(actions.createPhoto(params)),
 		fetchPhotos: (params) => dispatch(actions.fetchPhotos(params))
 
 	}
