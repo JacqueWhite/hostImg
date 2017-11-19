@@ -11,7 +11,15 @@ module.exports = {
                     reject(err)
                     return
                 }
-                resolve(photos)
+                if (isRaw)
+                	resolve(photos)
+                else {
+                	var list = []
+                	photos.forEach(function(photo, i){
+                		list.push(photo.summary())
+                	})
+                	resolve(list)
+                }
             })
         })
     },
@@ -24,7 +32,11 @@ module.exports = {
                     reject(err)
                     return
                 }
-                resolve(photo)
+
+                if (isRaw)
+                	resolve(photo)
+				else 
+					resolve(photo.summary())
             })
         })
     },
@@ -36,7 +48,11 @@ module.exports = {
                     reject(err)
                     return
                 }
-                resolve(photo)
+                
+                if (isRaw)
+                	resolve(photo)
+				else 
+					resolve(photo.summary())
             })
         })
     }

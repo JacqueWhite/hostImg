@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Photos } from './components/containers'
 import store from './stores'
 import { Provider } from 'react-redux'
+import { Home } from './components/layout'
 
 const app = (
 	<Provider store = { store.configureStore() }>
 		<div>
-			React Entry Point
-			<Photos />
+			<Home />
 		</div>
 	</Provider>
 )

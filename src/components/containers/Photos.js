@@ -10,9 +10,20 @@ class Photos extends Component {
 	}
 
 	render(){
+		const list = this.props.photos.list.map((photo, i) => {
+			return (
+				<li key={photo.id}>{photo.id}</li>
+			)
+		})
+
 		return (
 				<div>
 					Photos container
+					<div className="card">
+					<ol>
+					  { list }	
+					</ol>
+					</div>
 				</div>
 			)
 	}
