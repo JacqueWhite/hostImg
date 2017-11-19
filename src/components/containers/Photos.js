@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { APIManager } from '../../utils'
 import { connect } from 'react-redux'
 import actions from '../../actions'
+import { UploadPhoto } from '../view'
 
 class Photos extends Component {
 
@@ -18,7 +19,7 @@ class Photos extends Component {
 
 		return (
 				<div>
-					Photos container
+					<UploadPhoto />
 					<div className="card">
 					<ol>
 					  { list }	
