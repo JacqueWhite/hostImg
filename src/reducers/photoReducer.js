@@ -1,7 +1,7 @@
 import constants from '../constants'
 
 var initialState = {
-	list: []
+	list: null
 }
 
 export default (state = initialState, action) => {
@@ -11,15 +11,17 @@ export default (state = initialState, action) => {
 	switch(action.type){
 		case constants.PHOTOS_RECEIVED:
 			// console.log('PHOTOS_RECEIVED: ' +JSON.stringify(action.photos))
-			updated['list'] = action.photos
-			
+			updated['list'] = action.photo
+			return updated
 
+		case constants.PHOTO_CREATED:
+			let updatedList = (updated['list']==null) ? [] : Object.assign([], updated['list'])
+			updatedList.unshift(action.photo)
+			updated['list'] = updatedList
 			return updated
 
 		default:
-
 			return updated
-
 	}
 
 }

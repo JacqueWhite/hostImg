@@ -6,7 +6,7 @@ export default {
 	fetchPhotos: (params) => {
 		return (dispatch) => {
 			APIManager
-			.get('/api/photo', null)
+			.get('/api/photo', params)
 			.then(response => {
 				console.log("RESPONSE: " + JSON.stringify(response))
 				dispatch({
@@ -40,7 +40,7 @@ export default {
 	photosReceived: (photos) => {
 		return{
 			type: constants.PHOTOS_RECEIVED,
-			photos: response.results
+			photos: photos
 		}
 
 	}
