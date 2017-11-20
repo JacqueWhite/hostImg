@@ -8,7 +8,7 @@ export default {
 			APIManager
 			.get('/api/photo', params)
 			.then(response => {
-				console.log("RESPONSE: " + JSON.stringify(response))
+				console.log('RESPONSE: '+JSON.stringify(response))
 				dispatch({
 					type: constants.PHOTOS_RECEIVED,
 					photos: response.results

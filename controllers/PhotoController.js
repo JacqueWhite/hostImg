@@ -6,22 +6,31 @@ module.exports = {
 
     get: function(params, isRaw) {
         return new Promise(function(resolve, reject) {
-            Photo.find(params, function(err, photos) {
-                if (err) {
-                    reject(err)
-                    return
-                }
-                if (isRaw)
-                	resolve(photos)
-                else {
-                	var list = []
-                	photos.forEach(function(photo, i){
-                		list.push(photo.summary())
-                	})
-                	resolve(list)
-                }
-            })
-        })
+
+			var filters = {
+				sort: {
+					timestamp: -1
+				}
+			}
+
+			Photo.find(params, null, filters, function(err, photos){
+				if (err){
+					reject(err)
+					return
+				}
+
+				if (isRaw == true)
+					resolve(photos)
+				else {
+					var list = []
+					photos.forEach(function(photo, i){
+						list.push(photo.summary())
+					})
+
+					resolve(list)
+				}
+			})
+		})
     },
 
 

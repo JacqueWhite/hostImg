@@ -6,9 +6,9 @@ import { UploadPhoto } from '../view'
 
 class Photos extends Component {
 
-	// componentDidMount(){
-	// 	this.props.fetchPhotos();
-	// }
+	componentDidMount(){
+		this.props.fetchPhotos(null);
+	}
 
 	// componentDidUpdate(){
 	// 	console.log('componentDidUpdate: ')
@@ -16,18 +16,7 @@ class Photos extends Component {
 	// }
 
 	submitPhoto(photo){
-		// const user = this.props.account.user
-		// if (user == null){
-		// 	alert('Please sign up or login to submit.')
-		// 	return
-		// }
-
-		// image['profile'] = {
-		// 	id: '5a0f5949c6ce2ab77be05d2b',
-		// 	username:'testing1'
-		// }
-
-		// console.log('submitPhoto: '+JSON.stringify(photo))
+		console.log('submittingPhoto!!! '+JSON.stringify(photo))
 		this.props.createPhoto(photo)
 	}
 
@@ -36,7 +25,7 @@ class Photos extends Component {
 
 		return (
 				<div>
-					<UploadPhoto onCreate={this.submitPhoto.bind(this)} />
+					<UploadPhoto onCreate={this.submitPhoto.bind(this)}/>
 
 					<div className="table-wrapper">
 						<table className="alt">

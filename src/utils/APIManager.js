@@ -47,7 +47,37 @@ export default {
 		})
 	},
 
+  savePhoto: function(myPhoto) {
+    return superagent.post(myPhoto);
+  },
+
 	uploadFile: (url, file, params) => {
+		return new Promise((resolve, reject) => {
+			console.log('made it');
+
+	        let uploadRequest = superagent.post(url)
+	        uploadRequest.attach('file', file)
+
+	        if (params != null){
+		        Object.keys(params).forEach((key) => {
+			        uploadRequest.field(key, params[key])
+		        })
+	        }
+
+	        uploadRequest.end((err, resp) => {
+	        	if (err){
+					reject(err)
+	              	return
+	        	}
+
+	        	const uploaded = resp.body
+	        	console.log('UPLOAD COMPLETE: '+JSON.stringify(uploaded))
+	        	resolve(uploaded)
+	        })
+		})
+	},
+
+	uploadFilez: (url, file, params) => {
 		return new Promise((resolve, reject) => {
 			console.log('made it');
 

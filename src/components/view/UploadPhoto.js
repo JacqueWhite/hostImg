@@ -2,21 +2,20 @@ import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
 import sha1 from 'sha1';
 import superagent from 'superagent';
-import APIManager from '../../utils'
+import actions from '../../actions'
+import { APIManager } from '../../utils'
 
 class UploadPhoto extends Component {
 
 	constructor(){
 		super()
 		this.state = {
-			image: '',
-			profile: {
-		      id: '5a0f5949c6ce2ab77be05d2b',
-		      username:'testing1'
-		    },
 			photo: {
 				image: '',
-				profile: ''
+				profile: {
+		      		id: '5a0f5949c6ce2ab77be05d2b',
+		      		username:'testing1'
+		    	}
 			} 
 		}
 	}
@@ -24,7 +23,7 @@ class UploadPhoto extends Component {
 	updatePhoto(event){
 		event.preventDefault()
 		let updated = Object.assign({}, this.state.image)
-		updated[event.target.id] = event.target.value
+		updated['event.target.id'] = event.target.value
 		this.setState({
 			image: updated
 		})
@@ -32,16 +31,28 @@ class UploadPhoto extends Component {
 
 	submitPhoto(event){
 		event.preventDefault()
-		console.log('submitPhoto: '+JSON.stringify(this.state.image))
-		console.log(this.state)
-		if (this.state.image.length == 0){
+		console.log('submitPhoto: '+JSON.stringify(this.state.photo))
+		if (this.state.photo.image.length == 0){
 			alert('Please add an image first.')
 			return
 		}
 
-		let updated = this.state.image
+		let updated = Object.assign({}, this.state.photo)
 		this.props.onCreate(updated)
+		console.log('niceeee')
 	}
+
+    handlePhotoSubmit(event) {
+      event.preventDefault();
+      if (this.state.imageUrl) {
+	      var myPhoto = {
+	       image: this.state.image
+	      }
+      console.log(myPhoto);
+      APIManager.savePhoto(myPhoto)
+          .catch(err => console.log(err));
+      }
+    }
 
 	// imageSelected(files){
 	// 	console.log('imageSelected:  ')
@@ -122,11 +133,35 @@ class UploadPhoto extends Component {
 			// let updatedImage = Object.assign({}, this.state.image)
 			// updatedImage[resp.body.secure_url] = resp.body.secure_url
 
+			let updated = Object.assign({}, this.state.photo)
+			updated['image'] = photoUrl
 			this.setState({
-				image: photoUrl
+				photo: updated
 			})
+			// this.setState({
+			// 	image: photoUrl
+			// })
 			console.log(this.state)
 		  })
+
+		APIManager.uploadFilez(url, image, params)
+		.then((uploaded) => {
+			console.log('Upload Complete: '+JSON.stringify(uploaded))
+			let updated = Object.assign({}, this.state.photo)
+			updated['image'] = uploaded['secure_url']
+			this.setState({
+				photo: updated
+			})
+
+			// Cloudinary returns this:
+			// {"public_id":"w2wah5zepcihbdvpky3v","version":1484004334,"signature":"cee9e534a282591c60fb83f8e7bdb028108ab6b3","width":360,"height":360,"format":"png","resource_type":"image","created_at":"2017-01-09T23:25:34Z","tags":[],"bytes":21776,"type":"upload","etag":"d5d83eeac7bc222569a7cef022426c9f","url":"http://res.cloudinary.com/dcxaoww0c/image/upload/v1484004334/w2wah5zepcihbdvpky3v.png","secure_url":"https://res.cloudinary.com/dcxaoww0c/image/upload/v1484004334/w2wah5zepcihbdvpky3v.png","original_filename":"apple"}
+
+		})
+		.catch((err) => {
+			alert(err)
+		})
+
+
 		}
 
 	render (){
@@ -143,7 +178,7 @@ class UploadPhoto extends Component {
 						<button className="button special small" style={{marginTop:12, marginLeft:12, width:90+'%'}} onClick={this.submitPhoto.bind(this)}>Submit</button>
 					</div>
 					<div className="6u 12u$(small)">
-						<img style={{width:120, float:'right', marginTop:12}} src={this.state.image} />
+						<img style={{width:120, float:'right', marginTop:12}} src={this.state.photo.image} />
 					</div>
 				</div>
 

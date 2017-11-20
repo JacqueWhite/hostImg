@@ -21517,31 +21517,20 @@ var Photos = function (_Component) {
 	}
 
 	_createClass(Photos, [{
-		key: 'submitPhoto',
-
-
-		// componentDidMount(){
-		// 	this.props.fetchPhotos();
-		// }
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			this.props.fetchPhotos(null);
+		}
 
 		// componentDidUpdate(){
 		// 	console.log('componentDidUpdate: ')
 		// 	this.props.fetchPhotos();
 		// }
 
+	}, {
+		key: 'submitPhoto',
 		value: function submitPhoto(photo) {
-			// const user = this.props.account.user
-			// if (user == null){
-			// 	alert('Please sign up or login to submit.')
-			// 	return
-			// }
-
-			// image['profile'] = {
-			// 	id: '5a0f5949c6ce2ab77be05d2b',
-			// 	username:'testing1'
-			// }
-
-			// console.log('submitPhoto: '+JSON.stringify(photo))
+			console.log('submittingPhoto!!! ' + JSON.stringify(photo));
 			this.props.createPhoto(photo);
 		}
 	}, {
@@ -21694,7 +21683,37 @@ exports.default = {
 		});
 	},
 
+	savePhoto: function savePhoto(myPhoto) {
+		return _superagent2.default.post(myPhoto);
+	},
+
 	uploadFile: function uploadFile(url, file, params) {
+		return new _bluebird2.default(function (resolve, reject) {
+			console.log('made it');
+
+			var uploadRequest = _superagent2.default.post(url);
+			uploadRequest.attach('file', file);
+
+			if (params != null) {
+				Object.keys(params).forEach(function (key) {
+					uploadRequest.field(key, params[key]);
+				});
+			}
+
+			uploadRequest.end(function (err, resp) {
+				if (err) {
+					reject(err);
+					return;
+				}
+
+				var uploaded = resp.body;
+				console.log('UPLOAD COMPLETE: ' + JSON.stringify(uploaded));
+				resolve(uploaded);
+			});
+		});
+	},
+
+	uploadFilez: function uploadFilez(url, file, params) {
 		return new _bluebird2.default(function (resolve, reject) {
 			console.log('made it');
 
@@ -21745,7 +21764,7 @@ exports.default = {
 	fetchPhotos: function fetchPhotos(params) {
 		return function (dispatch) {
 			_utils.APIManager.get('/api/photo', params).then(function (response) {
-				console.log("RESPONSE: " + JSON.stringify(response));
+				console.log('RESPONSE: ' + JSON.stringify(response));
 				dispatch({
 					type: _constants2.default.PHOTOS_RECEIVED,
 					photos: response.results
@@ -21828,9 +21847,11 @@ var _superagent = __webpack_require__(95);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
-var _utils = __webpack_require__(13);
+var _actions = __webpack_require__(81);
 
-var _utils2 = _interopRequireDefault(_utils);
+var _actions2 = _interopRequireDefault(_actions);
+
+var _utils = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21849,14 +21870,12 @@ var UploadPhoto = function (_Component) {
 		var _this = _possibleConstructorReturn(this, (UploadPhoto.__proto__ || Object.getPrototypeOf(UploadPhoto)).call(this));
 
 		_this.state = {
-			image: '',
-			profile: {
-				id: '5a0f5949c6ce2ab77be05d2b',
-				username: 'testing1'
-			},
 			photo: {
 				image: '',
-				profile: ''
+				profile: {
+					id: '5a0f5949c6ce2ab77be05d2b',
+					username: 'testing1'
+				}
 			}
 		};
 		return _this;
@@ -21867,7 +21886,7 @@ var UploadPhoto = function (_Component) {
 		value: function updatePhoto(event) {
 			event.preventDefault();
 			var updated = Object.assign({}, this.state.image);
-			updated[event.target.id] = event.target.value;
+			updated['event.target.id'] = event.target.value;
 			this.setState({
 				image: updated
 			});
@@ -21876,15 +21895,29 @@ var UploadPhoto = function (_Component) {
 		key: 'submitPhoto',
 		value: function submitPhoto(event) {
 			event.preventDefault();
-			console.log('submitPhoto: ' + JSON.stringify(this.state.image));
-			console.log(this.state);
-			if (this.state.image.length == 0) {
+			console.log('submitPhoto: ' + JSON.stringify(this.state.photo));
+			if (this.state.photo.image.length == 0) {
 				alert('Please add an image first.');
 				return;
 			}
 
-			var updated = this.state.image;
+			var updated = Object.assign({}, this.state.photo);
 			this.props.onCreate(updated);
+			console.log('niceeee');
+		}
+	}, {
+		key: 'handlePhotoSubmit',
+		value: function handlePhotoSubmit(event) {
+			event.preventDefault();
+			if (this.state.imageUrl) {
+				var myPhoto = {
+					image: this.state.image
+				};
+				console.log(myPhoto);
+				_utils.APIManager.savePhoto(myPhoto).catch(function (err) {
+					return console.log(err);
+				});
+			}
 		}
 
 		// imageSelected(files){
@@ -21970,10 +22003,29 @@ var UploadPhoto = function (_Component) {
 				// let updatedImage = Object.assign({}, this.state.image)
 				// updatedImage[resp.body.secure_url] = resp.body.secure_url
 
+				var updated = Object.assign({}, _this2.state.photo);
+				updated['image'] = photoUrl;
 				_this2.setState({
-					image: photoUrl
+					photo: updated
 				});
+				// this.setState({
+				// 	image: photoUrl
+				// })
 				console.log(_this2.state);
+			});
+
+			_utils.APIManager.uploadFilez(url, image, params).then(function (uploaded) {
+				console.log('Upload Complete: ' + JSON.stringify(uploaded));
+				var updated = Object.assign({}, _this2.state.photo);
+				updated['image'] = uploaded['secure_url'];
+				_this2.setState({
+					photo: updated
+				});
+
+				// Cloudinary returns this:
+				// {"public_id":"w2wah5zepcihbdvpky3v","version":1484004334,"signature":"cee9e534a282591c60fb83f8e7bdb028108ab6b3","width":360,"height":360,"format":"png","resource_type":"image","created_at":"2017-01-09T23:25:34Z","tags":[],"bytes":21776,"type":"upload","etag":"d5d83eeac7bc222569a7cef022426c9f","url":"http://res.cloudinary.com/dcxaoww0c/image/upload/v1484004334/w2wah5zepcihbdvpky3v.png","secure_url":"https://res.cloudinary.com/dcxaoww0c/image/upload/v1484004334/w2wah5zepcihbdvpky3v.png","original_filename":"apple"}
+			}).catch(function (err) {
+				alert(err);
 			});
 		}
 	}, {
@@ -22015,7 +22067,7 @@ var UploadPhoto = function (_Component) {
 					_react2.default.createElement(
 						'div',
 						{ className: '6u 12u$(small)' },
-						_react2.default.createElement('img', { style: { width: 120, float: 'right', marginTop: 12 }, src: this.state.image })
+						_react2.default.createElement('img', { style: { width: 120, float: 'right', marginTop: 12 }, src: this.state.photo.image })
 					)
 				),
 				_react2.default.createElement('br', null),
